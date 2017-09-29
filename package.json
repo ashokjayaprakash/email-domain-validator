@@ -1,0 +1,46 @@
+{
+  "name": "email-domain-validator",
+  "version": "1.0.3",
+  "description": "To validate email host & mail exchange using DNS protocol",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ashokjayaprakash/email-domain-validator.git"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "tsc:watch": "tsc --watch",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "test": "mocha -r ts-node/register ./src/test/*.ts"
+  },
+  "keywords": [
+    "email",
+    "validation",
+    "email",
+    "dns",
+    "mail",
+    "mail exchange",
+    "email host",
+    "email host validation",
+    "domain validation"
+  ],
+  "author": "Ashok JayaPrakash <ashokjp93@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/mocha": "^2.2.43",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^3.5.3",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.3"
+  },
+  "dependencies": {
+    "@types/joi": "^10.4.3",
+    "@types/node": "^8.0.31",
+    "joi": "^11.1.1"
+  }
+}
