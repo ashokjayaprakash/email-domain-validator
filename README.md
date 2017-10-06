@@ -19,8 +19,7 @@ EmailDomainValidator.validate("test@test.com")
 	})
 	.catch(function(err){
 		console.log("ERR: ", err);
-	});```   
-```javascript
+	});
 //Code snippet for Typescript
 import { validate } from"email-domain-validator";
 validate("test@test.com")
