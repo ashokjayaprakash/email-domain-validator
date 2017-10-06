@@ -28,4 +28,5 @@ validate("test@test.com")
 	})
 	.catch(function(err){
 		console.log("ERR: ", err);
-	});```
+	});
+```
