@@ -44,6 +44,7 @@ export function validate(email: string = "") {
             })
             .catch((e) => {
                 reject(e);
+                
             });    
     });
 }
@@ -68,18 +69,11 @@ function validateMailExchange(email: string) {
         //Validate Mail Exchange
         resolveMx(emailInfo.host, (err, data) => {
             if (err) {
-                return reject(`${email} - ${err.message}`);
+                err.message = `${email} - ${err.message}`;
+                return reject(err);
             }else {
                 return resolve(true);
             }
         });
     });
 }
-
-validate("ashokjp@gmail.com")
-    .then((data) => {
-        console.log(data);        
-    })
-    .catch((err) => {
-        console.log("ERR : ", err);        
-    });

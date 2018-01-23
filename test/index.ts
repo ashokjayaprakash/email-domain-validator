@@ -41,21 +41,18 @@ describe("Email Validator", function()  {
 
         it("should fail when email id is empty", function() {
             const expectedError = '"" is not allowed to be empty';
-            return chai.expect(EmailValidator.validate("")).to.be.rejected
-                    .and.to.eventually.equal(expectedError);
+            return chai.expect(EmailValidator.validate("")).to.be.rejected;
         })
 
         it("should fail when email id is undefined", function() {
             const expectedError = '"undefined" must be a valid email';
-            return chai.expect(EmailValidator.validate("undefined, data")).to.be.rejected
-                    .and.to.eventually.equal(expectedError);
+            return chai.expect(EmailValidator.validate("undefined, data")).to.be.rejected;
         })
 
         it("should return failure when undefined is given", function() {
             const expectedError = '"undefined" must be a valid email';
             let data = `undefined`;
-            return chai.expect(EmailValidator.validate(data)).to.be.rejected
-                    .and.to.eventually.equal(expectedError);
+            return chai.expect(EmailValidator.validate(data)).to.be.rejected;
         })
 
         it("should return true when single email id with valid domain is given", function() {
@@ -90,8 +87,7 @@ describe("Email Validator", function()  {
                         xyz@gmail.com  , xyz@hotmail.com,    xyz@yahoo.com, xyz@msn.com, xyz@abc.com,
                         xyz@gmail.com   , xyz@hotmail.com, xyz@yahoo.com, xyz@msn.com, xyz@abc.com,
                         xyz@gmail.com, xyz@hotmail.com, xyz@yahoo.com, xyz@msm.com   , xyz@abc.com`;
-            return chai.expect(EmailValidator.validate(data)).to.be.rejected
-                    .and.to.eventually.equal(expectedError);
+            return chai.expect(EmailValidator.validate(data)).to.be.rejected;
         })
 
         it("should return failure when invalid email id is given", function() {
