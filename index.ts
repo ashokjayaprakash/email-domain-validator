@@ -62,7 +62,7 @@ function validateMailExchange(email: string) {
             } else {
                 emailInfo.error.message = `${email} " - " ${emailInfo.error.message}`;
             }   
-            return reject(emailInfo.error.message);         
+            return reject(emailInfo.error);         
         }
             
         //Validate Mail Exchange
