@@ -13,6 +13,8 @@ NMP module to validate email host & mail exchange using DNS protocol.
 ```javascript
 //Code snippet for Javascript 
 const EmailDomainValidator = require("email-domain-validator");
+
+// To validate multiple email id give input as comma seperated string "test@test.com, xyz@abc.com"
 EmailDomainValidator.validate("test@test.com")
 	.then(function(data){
 		console.log(data);
