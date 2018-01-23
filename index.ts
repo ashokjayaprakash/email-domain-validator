@@ -58,10 +58,11 @@ function validateMailExchange(email: string) {
         const emailInfo = getEmailDomain(email);
         if (emailInfo && emailInfo.error) {
             if(emailInfo.error.message){
-                return reject(`${ emailInfo.error.message.replace("value", email) }`);
+                emailInfo.error.message = `${ emailInfo.error.message.replace("value", email) }`;                
             } else {
-                return reject(`${email} " - " ${emailInfo.error.message}`);
-            }            
+                emailInfo.error.message = `${email} " - " ${emailInfo.error.message}`;
+            }   
+            return reject(emailInfo.error.message);         
         }
             
         //Validate Mail Exchange
