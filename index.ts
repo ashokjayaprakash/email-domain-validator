@@ -19,7 +19,7 @@ export function validateEmail(email: string): EmailValidatorResult<string>  {
  * To retrive the domain name from the valdiated email
  * @param email Email id
  */
-export function getDomainFromEmail(email: string) {
+export function getEmailDomain(email: string) {
     const data = validateEmail(email);
     if (data && data.error)
         return data;
@@ -31,17 +31,54 @@ export function getDomainFromEmail(email: string) {
  * To validate the email host using DNS resolve MX
  * @param email Email id
  */
-export function validate(email: string) {
+export function validate(email: string = "") {
     return new Promise((resolve, reject) => {
-        const emailInfo = getDomainFromEmail(email);
-        if (emailInfo && emailInfo.error)
-            resolve(emailInfo.error);
+        let emailList =email.split(",");
+        let promiseList = [];
+        for(let email of emailList) {
+            promiseList.push(validateMailExchange(email.trim()));
+        }    
+        Promise.all(promiseList)
+            .then((response) => {
+                resolve(true);
+            })
+            .catch((e) => {
+                reject(e);
+            });    
+    });
+}
+
+/**
+ * Promise to validate mail exchange
+ * @param email 
+ */
+function validateMailExchange(email: string) {
+    return new Promise((resolve, reject) => {
+        //Domain validation
+        const emailInfo = getEmailDomain(email);
+        if (emailInfo && emailInfo.error) {
+            if(emailInfo.error.message){
+                return reject(`${ emailInfo.error.message.replace("value", email) }`);
+            } else {
+                return reject(`${email} " - " ${emailInfo.error.message}`);
+            }            
+        }
+            
+        //Validate Mail Exchange
         resolveMx(emailInfo.host, (err, data) => {
             if (err) {
-                reject(err);
+                return reject(`${email} - ${err.message}`);
             }else {
-                resolve(true);
+                return resolve(true);
             }
         });
     });
 }
+
+validate("ashokjp@gmail.com")
+    .then((data) => {
+        console.log(data);        
+    })
+    .catch((err) => {
+        console.log("ERR : ", err);        
+    });
