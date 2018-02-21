@@ -17,7 +17,7 @@ const EmailDomainValidator = require("email-domain-validator");
 // To validate multiple email id give input as comma seperated string "test@test.com, xyz@abc.com"
 EmailDomainValidator.validate("test@test.com")
 	.then(function(data){
-		console.log(data);
+		console.log("Success ", data);
 	})
 	.catch(function(err){
 		console.log("ERR: ", err);
@@ -26,9 +26,24 @@ EmailDomainValidator.validate("test@test.com")
 import { validate } from"email-domain-validator";
 validate("test@test.com")
 	.then(function(data){
-		console.log(data);
+		console.log("Success ",data);
 	})
 	.catch(function(err){
 		console.log("ERR: ", err);
 	});
+
+//Valid Domain Response Object
+	{
+		isValidDomain: true,
+		erorrMessage: [],
+		invalidEmailList: []
+	}
+//Valid Domain Response Object
+	{ 
+		isValidDomain: false,
+		erorrMessage: [ 'test@test.com - queryMx ENODATA test.com'],
+		invalidEmailList: [ 'test@test.com'] 
+	};
+```
+
 ```

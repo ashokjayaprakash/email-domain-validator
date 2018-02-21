@@ -5,6 +5,12 @@ export interface EmailValidatorResult<T> extends Joi.ValidationResult<T> {
     host?: string;
 }
 
+export interface EmailDomainValidatorResponse {
+    isValidDomain: boolean
+    erorrMessage?: Array<string>
+    invalidEmailList?: Array<string>
+}
+
 /**
  * To verify whether it is a valid email or not
  * @param email Email id
@@ -40,39 +46,68 @@ export function validate(email: string = "") {
         }    
         Promise.all(promiseList)
             .then((response) => {
-                resolve(true);
+                const domainValidatorResponse = parseMXResponse(response);
+                console.log("Err :", JSON.stringify(domainValidatorResponse));
+                return resolve(domainValidatorResponse);
             })
             .catch((e) => {
-                reject(e);
-                
+                console.log("Err :", JSON.stringify(e));
+                return reject(e);                
             });    
     });
 }
 
 /**
+ * Parse dns respose
+ */
+function parseMXResponse(mxResponse: any){
+    let data: EmailDomainValidatorResponse = {
+        isValidDomain: true,
+        erorrMessage: [],
+        invalidEmailList: []
+    };
+
+    for(let r of mxResponse) {
+        if(r instanceof Error) {
+            const mxErrorResponse = JSON.parse(r.message);
+            data.isValidDomain = false;
+            data.invalidEmailList.push(mxErrorResponse.emailId);
+            data.erorrMessage.push(mxErrorResponse.message);
+        }
+    }
+    return data;
+}
+
+
+/**
  * Promise to validate mail exchange
  * @param email 
  */
-function validateMailExchange(email: string) {
+function validateMailExchange(emailId: string) {
     return new Promise((resolve, reject) => {
         //Domain validation
-        const emailInfo = getEmailDomain(email);
+        const emailInfo = getEmailDomain(emailId);
         if (emailInfo && emailInfo.error) {
             if(emailInfo.error.message){
-                emailInfo.error.message = `${ emailInfo.error.message.replace("value", email) }`;                
+                emailInfo.error.message = `${ emailInfo.error.message.replace("value", emailId) }`;                
             } else {
-                emailInfo.error.message = `${email} " - " ${emailInfo.error.message}`;
+                emailInfo.error.message = `${emailId} " - " ${emailInfo.error.message}`;
             }   
             return reject(emailInfo.error);         
-        }
+        }   
             
         //Validate Mail Exchange
         resolveMx(emailInfo.host, (err, data) => {
             if (err) {
-                err.message = `${email} - ${err.message}`;
-                return reject(err);
+                let errorObj =  {
+                    emailId,
+                    message: `${emailId} - ${err.message}`
+                };
+
+                err.message = JSON.stringify(errorObj) ;
+                return resolve(err);
             }else {
-                return resolve(true);
+                return resolve(data);
             }
         });
     });
