@@ -47,11 +47,9 @@ export function validate(email: string = "") {
         Promise.all(promiseList)
             .then((response) => {
                 const domainValidatorResponse = parseMXResponse(response);
-                console.log("Err :", JSON.stringify(domainValidatorResponse));
                 return resolve(domainValidatorResponse);
             })
             .catch((e) => {
-                console.log("Err :", JSON.stringify(e));
                 return reject(e);                
             });    
     });
