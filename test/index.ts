@@ -42,28 +42,47 @@ describe("Email Validator", function()  {
                     .and.to.deep.equal(result);
         })
 
-        it("should be rejected", function() {
-            return EmailValidator.validate("test").should.be.eventually.rejected;
+        it("should be fulfilled when invalid data given", function() {
+            return EmailValidator.validate("test").should.be.eventually.fulfilled;
+        })
+
+        it("should be fulfilled when multiple invalid data given", function() {
+            return EmailValidator.validate("test, null, '', '\t', 'welcome' ").should.be.eventually.fulfilled;
         })
 
         it("should be fullfilled", function() {
             return EmailValidator.validate("test@gmail.com").should.be.eventually.fulfilled;
         })
 
-        it("should fail when email id is empty", function() {
-            const expectedError = '"" is not allowed to be empty';
-            return chai.expect(EmailValidator.validate("")).to.be.rejected;
+        it("should return error message when email id is empty", function() {
+            const result: any = { isValidDomain: false,
+                erorrMessage: [ '"" is not allowed to be empty' ],
+                invalidEmailList: [ '' ] }
+            return chai.expect(EmailValidator.validate("")).to.be.fulfilled
+                                .and.to.eventually.have.all.keys('isValidDomain', 'erorrMessage', 'invalidEmailList')
+                                .and.to.deep.equal(result);
         })
 
-        it("should fail when email id is undefined", function() {
-            const expectedError = '"undefined" must be a valid email';
-            return chai.expect(EmailValidator.validate("undefined, data")).to.be.rejected;
+        it("should return error message when multiple invalid data is given", function() {
+            const result: any = { isValidDomain: false,
+                erorrMessage:
+                 [ '"undefined" must be a valid email',
+                   '"data" must be a valid email' ],
+                invalidEmailList: [ 'undefined', 'data' ] }
+            return chai.expect(EmailValidator.validate("undefined, data")).to.be.fulfilled
+            .and.to.eventually.have.all.keys('isValidDomain', 'erorrMessage', 'invalidEmailList')
+            .and.to.deep.equal(result);
         })
 
-        it("should return failure when undefined is given", function() {
-            const expectedError = '"undefined" must be a valid email';
+        it("should return error message when undefined is given", function() {
+            const result: any = { isValidDomain: false,
+                erorrMessage:
+                 [ '"undefined" must be a valid email' ],
+                invalidEmailList: [ 'undefined'] }
             let data = `undefined`;
-            return chai.expect(EmailValidator.validate(data)).to.be.rejected;
+            return chai.expect(EmailValidator.validate(data)).to.be.fulfilled
+            .and.to.eventually.have.all.keys('isValidDomain', 'erorrMessage', 'invalidEmailList')
+            .and.to.deep.equal(result);
         })
 
         it("should return true when single email id with valid domain is given", function() {
@@ -81,6 +100,20 @@ describe("Email Validator", function()  {
                 invalidEmailList: []
             };
             let data = "xyz@gmail.com, xyz@hotmail.com, xyz@yahoo.com, xyz@msn.com";
+            return chai.expect(EmailValidator.validate(data)).to.be.fulfilled
+                        .and.to.eventually.have.all.keys('isValidDomain', 'erorrMessage', 'invalidEmailList')
+                        .and.to.deep.equal(result);
+        })
+
+        it("should return true when 1 valid email id, i invalid email id and 1 invalid data is given", function() {
+            const result: any = { isValidDomain: false,
+                erorrMessage:
+                 [ '"" is not allowed to be empty',
+                   'xyz@yah6676oo.c5om - queryMx ENOTFOUND yah6676oo.c5om',
+                   '"data" must be a valid email' ],
+                invalidEmailList: [ '', 'xyz@yah6676oo.c5om', 'data' ] };
+                
+            let data = ", xyz@hotmail.com, xyz@yah6676oo.c5om, data";
             return chai.expect(EmailValidator.validate(data)).to.be.fulfilled
                         .and.to.eventually.have.all.keys('isValidDomain', 'erorrMessage', 'invalidEmailList')
                         .and.to.deep.equal(result);
@@ -160,7 +193,6 @@ describe("Email Validator", function()  {
             xyz@live.co.uk,
             xyz@googlemail.com,
             xyz@yahoo.com,
-            xyz@ig.com.br,
             xyz@live.nl,
             xyz@bigpond.com,
             xyz@terra.com.br,

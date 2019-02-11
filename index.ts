@@ -83,25 +83,28 @@ function parseMXResponse(mxResponse: any){
  */
 function validateMailExchange(emailId: string) {
     return new Promise((resolve, reject) => {
+
+        let errorObj =  {
+            emailId,
+            message: ""
+        };
+
         //Domain validation
         const emailInfo = getEmailDomain(emailId);
         if (emailInfo && emailInfo.error) {
             if(emailInfo.error.message){
-                emailInfo.error.message = `${ emailInfo.error.message.replace("value", emailId) }`;                
+                errorObj.message = `${ emailInfo.error.message.replace('value', emailId) }`;                
             } else {
-                emailInfo.error.message = `${emailId} " - " ${emailInfo.error.message}`;
+                errorObj.message = `${emailId} " - " ${emailInfo.error.message}`;
             }   
-            return reject(emailInfo.error);         
+            const message = JSON.stringify(errorObj);            
+            return resolve(new Error(message));         
         }   
             
         //Validate Mail Exchange
         resolveMx(emailInfo.host, (err, data) => {
             if (err) {
-                let errorObj =  {
-                    emailId,
-                    message: `${emailId} - ${err.message}`
-                };
-
+                errorObj.message = `${emailId} - ${err.message}`;
                 err.message = JSON.stringify(errorObj) ;
                 return resolve(err);
             }else {
